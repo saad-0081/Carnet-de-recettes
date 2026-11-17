@@ -8,17 +8,14 @@
     <link rel="stylesheet" href="./css/style.css">
 </head>
 <body class="min-h-screen bg-red-50">
-
     <header class="bg-red-500 text-white text-center py-8 shadow-md">
         <h1 class="text-3xl font-bold"> Carnet de Recettes</h1>
         <p class="mt-2">Club Cuisine YouCode</p>
     </header>
     <main class="max-w-5xl mx-auto p-6">
-
         <h2 class="text-2xl font-bold text-gray-800 text-center mb-6">
             Nos recettes
         </h2>
-
         <input
             type="text"
             id="search"
@@ -26,10 +23,36 @@
             class="w-full max-w-md block mx-auto mb-8 p-3 rounded-xl border border-red-200 focus:outline-none focus:ring-2 focus:ring-red-400"
         >
 
-        <div id="recipes" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-
+<section class="bg-white p-6 rounded-2xl shadow-md mb-10">
+    <h2 class="text-2xl font-bold text-slate-900 mb-5">Ajouter une recette</h2>
+    <form id="recipe-form" class="grid gap-4">
+        <div>
+            <input id="name" type="text" placeholder="Nom de la recette" class="w-full p-3 border rounded-lg">
+            <p id="name-error" class="text-red-500 text-sm"></p>
+        </div>
+        <div>
+            <input id="cuisine" type="text" placeholder="Cuisine" class="w-full p-3 border rounded-lg">
+            <p id="cuisine-error" class="text-red-500 text-sm"></p>
+        </div>
+        <div>
+            <select id="difficulty" class="w-full p-3 border rounded-lg">
+                <option value="">Choisir la difficulté</option>
+                <option value="Easy">Easy</option>
+                <option value="Medium">Medium</option>
+                <option value="Hard">Hard</option>
+            </select>
+            <p id="difficulty-error" class="text-red-500 text-sm"></p>
+        </div>
+        <div>
+            <input id="prepTimeMinutes" type="number" placeholder="Temps (minutes)" class="w-full p-3 border rounded-lg">
+            <p id="time-error" class="text-red-500 text-sm"></p>
+        </div>
+        <button id="submit-btn" type="submit" class="bg-slate-900 text-white p-3 rounded-lg hover:bg-blue-700">Ajouter la recette</button>
+        <p id="success-message" class="text-green-600"></p>
+    </form>
+</section>
+        <div id="recipes" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"><div>
     </main>
-
     <script type="module" src="./js/main.js"></script>
 </body>
 </html>
