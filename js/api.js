@@ -9,3 +9,12 @@ export async function getRecipes() {
     const response = await api.get("/recipes?limit=12");
     return response.data;
 }
+export async function searchRecipes(keyword) {
+    const response = await api.get("/recipes/search", {
+        params: {
+            q: keyword
+        }
+    });
+
+    return response.data;
+}
