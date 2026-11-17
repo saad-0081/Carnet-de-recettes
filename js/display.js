@@ -33,3 +33,13 @@ export function renderRecipes(recipes) {
         container.appendChild(card);
     });
 }
+export function renderNoResults() {
+    const container = document.querySelector("#recipes");
+
+    container.replaceChildren();
+
+    const message = document.createElement("p");
+    message.textContent = "Aucune recette trouvée";
+
+    container.appendChild(message);
+}

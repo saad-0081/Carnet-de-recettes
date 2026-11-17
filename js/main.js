@@ -1,6 +1,5 @@
 import { getRecipes, searchRecipes } from "./api.js";
-import { renderRecipes } from "./display.js";
-
+import { renderRecipes, renderNoResults } from "./display.js";
 async function init() {
     try {
         const data = await getRecipes();
@@ -24,5 +23,9 @@ searchInput.addEventListener("input", async() => {
 
     const data = await searchRecipes(searchTerm);
 
-    renderRecipes(data.recipes);
+    if (data.recipes.length === 0) {
+        renderNoResults();
+    } else {
+        renderRecipes(data.recipes);
+    }
 });
