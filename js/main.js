@@ -1,4 +1,4 @@
-import { getRecipes } from "./api.js";
+import { getRecipes, searchRecipes } from "./api.js";
 import { renderRecipes } from "./display.js";
 
 async function init() {
@@ -11,3 +11,18 @@ async function init() {
 }
 
 init();
+const searchInput = document.querySelector("#search");
+
+searchInput.addEventListener("input", async() => {
+    const searchTerm = searchInput.value.trim();
+
+    if (searchTerm === "") {
+        const data = await getRecipes();
+        renderRecipes(data.recipes);
+        return;
+    }
+
+    const data = await searchRecipes(searchTerm);
+
+    renderRecipes(data.recipes);
+});
