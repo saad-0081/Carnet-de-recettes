@@ -7,20 +7,29 @@
     <title>Carnet de Recettes</title>
     <link rel="stylesheet" href="./css/style.css">
 </head>
-<body>
-    <header>
-        <h1> Carnet de Recettes</h1>
-        <p>Club Cuisine YouCode</p>
+<body class="min-h-screen bg-red-50">
+
+    <header class="bg-red-500 text-white text-center py-8 shadow-md">
+        <h1 class="text-3xl font-bold"> Carnet de Recettes</h1>
+        <p class="mt-2">Club Cuisine YouCode</p>
     </header>
-    <main>
-        <h2>Nos recettes</h2>
-    <input
-    type="text"
-    id="search"
-    placeholder="Rechercher une recette..."
-    >
-<div id="recipes"></div>
+    <main class="max-w-5xl mx-auto p-6">
+
+        <h2 class="text-2xl font-bold text-gray-800 text-center mb-6">
+            Nos recettes
+        </h2>
+
+        <input
+            type="text"
+            id="search"
+            placeholder="Rechercher une recette..."
+            class="w-full max-w-md block mx-auto mb-8 p-3 rounded-xl border border-red-200 focus:outline-none focus:ring-2 focus:ring-red-400"
+        >
+
+        <div id="recipes" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
     </main>
+
     <script type="module" src="./js/main.js"></script>
 </body>
 </html>

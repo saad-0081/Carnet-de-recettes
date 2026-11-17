@@ -29,3 +29,10 @@ searchInput.addEventListener("input", async() => {
         renderRecipes(data.recipes);
     }
 });
+document.addEventListener("click", async(event) => {
+    if (event.target.id === "show-all") {
+        const data = await getRecipes();
+        renderRecipes(data.recipes);
+        searchInput.value = "";
+    }
+});
