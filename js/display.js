@@ -33,3 +33,17 @@ export function renderRecipes(recipes) {
         container.appendChild(card);
     });
 }
+export function renderNoResults() {
+    const container = document.querySelector("#recipes");
+    container.replaceChildren();
+
+    const message = document.createElement("p");
+    message.textContent = "Aucune recette trouvée";
+
+    const button = document.createElement("button");
+    button.textContent = "Afficher toutes les recettes";
+    button.id = "show-all";
+    button.className = "bg-red-500 text-white px-4 py-2 rounded-lg mt-4";
+
+    container.append(message, button);
+}
