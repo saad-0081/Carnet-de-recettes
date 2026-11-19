@@ -36,3 +36,18 @@ document.addEventListener("click", async(event) => {
         searchInput.value = "";
     }
 });
+const form = document.querySelector("#recipe-form");
+
+form.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const name = document.querySelector("#name").value;
+    const cuisine = document.querySelector("#cuisine").value;
+    const difficulty = document.querySelector("#difficulty").value;
+    const time = document.querySelector("#prepTimeMinutes").value;
+
+    document.querySelector("#name-error").textContent = validateName(name);
+    document.querySelector("#cuisine-error").textContent = validateCuisine(cuisine);
+    document.querySelector("#difficulty-error").textContent = validateDifficulty(difficulty);
+    document.querySelector("#time-error").textContent = validateTime(time);
+});
