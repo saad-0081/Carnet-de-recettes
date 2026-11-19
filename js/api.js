@@ -18,3 +18,7 @@ export async function searchRecipes(keyword) {
 
     return response.data;
 }
+export async function addRecipe(recipeData) {
+    const response = await api.post("/recipes/add", recipeData);
+    return response.data;
+}
