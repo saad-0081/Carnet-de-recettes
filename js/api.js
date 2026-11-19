@@ -22,3 +22,7 @@ export async function addRecipe(recipeData) {
     const response = await api.post("/recipes/add", recipeData);
     return response.data;
 }
+export async function deleteRecipe(id) {
+    const response = await api.delete(`/recipes/${id}`);
+    return response.data;
+}
