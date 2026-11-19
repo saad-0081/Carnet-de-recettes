@@ -1,6 +1,5 @@
 export function renderRecipes(recipes) {
     const container = document.querySelector("#recipes");
-
     container.replaceChildren();
 
     recipes.forEach(recipe => {
@@ -8,9 +7,13 @@ export function renderRecipes(recipes) {
         card.className = "bg-white rounded-xl shadow-md overflow-hidden";
 
         const image = document.createElement("img");
-        image.src = recipe.image;
+        image.src = recipe.image || "https://images.unsplash.com/photo-1546549032-9571cd6b27df?w=600";
         image.alt = recipe.name;
         image.className = "w-full h-48 object-cover";
+
+        image.onerror = () => {
+            image.src = "https://placehold.co/600x400?text=Recipe";
+        };
 
         const content = document.createElement("div");
         content.className = "p-4";
@@ -33,6 +36,7 @@ export function renderRecipes(recipes) {
         container.appendChild(card);
     });
 }
+
 export function renderNoResults() {
     const container = document.querySelector("#recipes");
     container.replaceChildren();
