@@ -1,4 +1,4 @@
-import { getRecipes, searchRecipes, addRecipe } from "./api.js";
+import { getRecipes, searchRecipes, addRecipe, deleteRecipe } from "./api.js";
 import { renderRecipes, renderNoResults } from "./display.js";
 import {
     validateName,
@@ -8,14 +8,20 @@ import {
 } from "./validation.js";
 
 let recipes = [];
+let createdRecipeIds = [];
 
 async function init() {
+    const loading = document.querySelector("#loading");
+    loading.classList.remove("hidden");
+
     try {
         const data = await getRecipes();
         recipes = data.recipes;
         renderRecipes(recipes);
     } catch (error) {
         console.error("Erreur :", error.message);
+    } finally {
+        loading.classList.add("hidden");
     }
 }
 
@@ -96,6 +102,7 @@ form.addEventListener("submit", async(event) => {
 
         const newRecipe = await addRecipe(recipeData);
 
+        createdRecipeIds.push(newRecipe.id);
         recipes.unshift(newRecipe);
         renderRecipes(recipes);
 
@@ -109,5 +116,38 @@ form.addEventListener("submit", async(event) => {
     } finally {
         submitButton.disabled = false;
         submitButton.textContent = "Ajouter la recette";
+    }
+});
+
+document.addEventListener("click", async(event) => {
+    if (event.target.dataset.id) {
+        const confirmed = confirm("Voulez-vous vraiment supprimer cette recette ?");
+
+        if (!confirmed) return;
+
+        try {
+            const id = Number(event.target.dataset.id);
+
+            if (!createdRecipeIds.includes(id)) {
+                await deleteRecipe(id);
+            }
+
+            recipes = recipes.filter(recipe => recipe.id !== id);
+
+            createdRecipeIds = createdRecipeIds.filter(
+                recipeId => recipeId !== id
+            );
+
+            renderRecipes(recipes);
+
+            alert("Recette supprimée avec succès !");
+
+        } catch (error) {
+            console.log("Erreur :", error);
+            console.log("Status :", error.response || status);
+            console.log("Message :", error.response || data);
+
+            alert("Erreur lors de la suppression !");
+        }
     }
 });
