@@ -147,6 +147,14 @@ document.addEventListener("click", async(event) => {
             console.log("Status :", error.response || status);
             console.log("Message :", error.response || data);
 
+            await deleteRecipe(id);
+
+            recipes = recipes.filter(recipe => recipe.id !== id);
+            renderRecipes(recipes);
+
+            alert("Recette supprimée avec succès !");
+        } catch (error) {
+            console.error("Erreur :", error.message);
             alert("Erreur lors de la suppression !");
         }
     }
