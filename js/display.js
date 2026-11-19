@@ -31,7 +31,12 @@ export function renderRecipes(recipes) {
         const time = document.createElement("p");
         time.textContent = `Préparation : ${recipe.prepTimeMinutes} min`;
 
-        content.append(title, cuisine, difficulty, time);
+        const deleteButton = document.createElement("button");
+        deleteButton.textContent = "Supprimer";
+        deleteButton.className = "bg-red-500 text-white px-4 py-2 rounded-lg mt-3";
+        deleteButton.dataset.id = recipe.id;
+
+        content.append(title, cuisine, difficulty, time, deleteButton);
         card.append(image, content);
         container.appendChild(card);
     });
