@@ -17,3 +17,20 @@ export function validateCuisine(cuisine) {
 
     return "";
 }
+export function validateDifficulty(difficulty) {
+    if (difficulty === "") {
+        return "Veuillez choisir une difficulté";
+    }
+
+    return "";
+}
+
+export function validateTime(time) {
+    const minutes = Number(time);
+
+    if (time === "" || minutes < 1 || minutes > 300) {
+        return "Le temps  entre 1 et 300 minutes";
+    }
+
+    return "";
+}
