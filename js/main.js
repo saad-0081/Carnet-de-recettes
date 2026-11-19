@@ -1,4 +1,4 @@
-import { getRecipes, searchRecipes, addRecipe } from "./api.js";
+import { getRecipes, searchRecipes, addRecipe, deleteRecipe } from "./api.js";
 import { renderRecipes, renderNoResults } from "./display.js";
 import {
     validateName,
@@ -109,5 +109,26 @@ form.addEventListener("submit", async(event) => {
     } finally {
         submitButton.disabled = false;
         submitButton.textContent = "Ajouter la recette";
+    }
+});
+document.addEventListener("click", async(event) => {
+    if (event.target.dataset.id) {
+        const confirmed = confirm("Voulez-vous vraiment supprimer cette recette ?");
+
+        if (!confirmed) return;
+
+        try {
+            const id = Number(event.target.dataset.id);
+
+            await deleteRecipe(id);
+
+            recipes = recipes.filter(recipe => recipe.id !== id);
+            renderRecipes(recipes);
+
+            alert("Recette supprimée avec succès !");
+        } catch (error) {
+            console.error("Erreur :", error.message);
+            alert("Erreur lors de la suppression !");
+        }
     }
 });
