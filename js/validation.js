@@ -1,4 +1,8 @@
 export function validateName(name) {
+    if (name.trim() === "") {
+        return "Le nom est obligatoire";
+    }
+
     if (name.trim().length < 3) {
         return "Le nom doit contenir au moins 3 caractères";
     }
@@ -17,6 +21,7 @@ export function validateCuisine(cuisine) {
 
     return "";
 }
+
 export function validateDifficulty(difficulty) {
     if (difficulty === "") {
         return "Veuillez choisir une difficulté";
@@ -28,8 +33,8 @@ export function validateDifficulty(difficulty) {
 export function validateTime(time) {
     const minutes = Number(time);
 
-    if (time === "" || minutes < 1 || minutes > 300) {
-        return "Le temps  entre 1 et 300 minutes";
+    if (time === "" || !Number.isFinite(minutes) || minutes < 1 || minutes > 300) {
+        return "Le temps doit être entre 1 et 300 minutes";
     }
 
     return "";

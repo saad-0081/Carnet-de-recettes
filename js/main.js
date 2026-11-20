@@ -1,5 +1,14 @@
-import { getRecipes, searchRecipes, addRecipe, deleteRecipe } from "./api.js";
-import { renderRecipes, renderNoResults } from "./display.js";
+import {
+    getRecipes,
+    searchRecipes,
+    addRecipe,
+    deleteRecipe
+} from "./api.js";
+import {
+    renderRecipes,
+    renderNoResults
+} from "./display.js";
+
 import {
     validateName,
     validateCuisine,
@@ -9,38 +18,41 @@ import {
 
 let recipes = [];
 let createdRecipeIds = [];
+let retryAction = getRecipes;
 
-async function init() {
-    const loading = document.querySelector("#loading");
-    loading.classList.remove("hidden");
+const loading = document.querySelector("#loading");
+const errorMessage = document.querySelector("#error-message");
+const errorText = document.querySelector("#error-text");
+const searchInput = document.querySelector("#search");
+const form = document.querySelector("#recipe-form");
+const submitButton = document.querySelector("#submit-btn");
 
-    try {
-        const data = await getRecipes();
-        recipes = data.recipes;
-        renderRecipes(recipes);
-    } catch (error) {
-        console.error("Erreur :", error.message);
-    } finally {
-        loading.classList.add("hidden");
+// Afficher une erreur
+function showError(error) {
+    if (!error.response) {
+        errorText.textContent =
+            "Impossible de contacter le serveur.  deconnexion.";
+    } else if (error.response.status === 404) {
+        errorText.textContent = "Ressource introuvable (404).";
+    } else if (error.response.status === 500) {
+        errorText.textContent = "Erreur interne du serveur (500).";
+    } else {
+        errorText.textContent =
+            "Une erreur inattendue est survenue.";
     }
+
+    errorMessage.classList.remove("hidden");
 }
 
-init();
+async function loadRecipes(request = getRecipes) {
+    retryAction = request;
 
-const searchInput = document.querySelector("#search");
+    loading.classList.remove("hidden");
+    errorMessage.classList.add("hidden");
 
-searchInput.addEventListener("input", async() => {
     try {
-        const searchTerm = searchInput.value.trim();
+        const data = await request();
 
-        if (searchTerm === "") {
-            const data = await getRecipes();
-            recipes = data.recipes;
-            renderRecipes(recipes);
-            return;
-        }
-
-        const data = await searchRecipes(searchTerm);
         recipes = data.recipes;
 
         if (recipes.length === 0) {
@@ -48,24 +60,42 @@ searchInput.addEventListener("input", async() => {
         } else {
             renderRecipes(recipes);
         }
+
     } catch (error) {
-        console.error("Erreur :", error.message);
+        showError(error);
+
+    } finally {
+        loading.classList.add("hidden");
+    }
+}
+
+function init() {
+    loadRecipes();
+}
+
+init();
+
+// Recherche
+searchInput.addEventListener("input", async() => {
+    const keyword = searchInput.value.trim();
+
+    if (keyword === "") {
+        loadRecipes(getRecipes);
+    } else {
+        loadRecipes(() => searchRecipes(keyword));
     }
 });
 
-document.addEventListener("click", async(event) => {
+// Afficher toutes les recettes
+document.addEventListener("click", event => {
     if (event.target.id === "show-all") {
-        const data = await getRecipes();
-        recipes = data.recipes;
-        renderRecipes(recipes);
         searchInput.value = "";
+        loadRecipes(getRecipes);
     }
 });
 
-const form = document.querySelector("#recipe-form");
-const submitButton = document.querySelector("#submit-btn");
-
-form.addEventListener("submit", async(event) => {
+// Ajouter une recette
+form.addEventListener("submit", async event => {
     event.preventDefault();
 
     const name = document.querySelector("#name").value.trim();
@@ -103,6 +133,7 @@ form.addEventListener("submit", async(event) => {
         const newRecipe = await addRecipe(recipeData);
 
         createdRecipeIds.push(newRecipe.id);
+
         recipes.unshift(newRecipe);
         renderRecipes(recipes);
 
@@ -112,42 +143,53 @@ form.addEventListener("submit", async(event) => {
         form.reset();
 
     } catch (error) {
-        console.error("Erreur :", error.message);
+        showError(error);
+
     } finally {
         submitButton.disabled = false;
         submitButton.textContent = "Ajouter la recette";
     }
 });
 
-document.addEventListener("click", async(event) => {
-    if (event.target.dataset.id) {
-        const confirmed = confirm("Voulez-vous vraiment supprimer cette recette ?");
+// Supprimer une recette
+document.addEventListener("click", async event => {
+    const button = event.target.closest("button[data-id]");
 
-        if (!confirmed) return;
-
-        try {
-            const id = Number(event.target.dataset.id);
-
-            if (!createdRecipeIds.includes(id)) {
-                await deleteRecipe(id);
-            }
-
-            recipes = recipes.filter(recipe => recipe.id !== id);
-
-            createdRecipeIds = createdRecipeIds.filter(
-                recipeId => recipeId !== id
-            );
-
-            renderRecipes(recipes);
-
-            alert("Recette supprimée avec succès !");
-
-        } catch (error) {
-            console.log("Erreur :", error);
-            console.log("Status :", error.response || status);
-            console.log("Message :", error.response || data);
-
-            alert("Erreur lors de la suppression !");
-        }
+    if (!button) {
+        return;
     }
+
+    const confirmed = confirm(
+        "Voulez-vous vraiment supprimer cette recette ?"
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    const id = Number(button.dataset.id);
+
+    try {
+        if (!createdRecipeIds.includes(id)) {
+            await deleteRecipe(id);
+        }
+
+        recipes = recipes.filter(recipe => recipe.id !== id);
+
+        createdRecipeIds = createdRecipeIds.filter(
+            recipeId => recipeId !== id
+        );
+
+        renderRecipes(recipes);
+
+        alert("Recette supprimée avec succès !");
+
+    } catch (error) {
+        showError(error);
+    }
+});
+
+// Réessayer erreur
+document.querySelector("#retry-btn").addEventListener("click", () => {
+    loadRecipes(retryAction);
 });
