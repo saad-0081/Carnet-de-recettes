@@ -1,17 +1,25 @@
 export function renderRecipes(recipes) {
     const container = document.querySelector("#recipes");
+    const count = document.querySelector("#recipe-count");
+
     container.replaceChildren();
+
+    count.textContent = `${recipes.length} recette affichée`;
 
     recipes.forEach(recipe => {
         const card = document.createElement("article");
         card.className = "bg-white rounded-xl shadow-md overflow-hidden";
 
         const image = document.createElement("img");
-        image.src = recipe.image || "https://images.unsplash.com/photo-1546549032-9571cd6b27df?w=600";
+        image.src = recipe.image ||
+            "https://placehold.co/600x400?text=Recipe";
         image.alt = recipe.name;
+        image.loading = "lazy";
+        image.decoding = "async";
         image.className = "w-full h-48 object-cover";
 
         image.onerror = () => {
+            image.onerror = null;
             image.src = "https://placehold.co/600x400?text=Recipe";
         };
 
@@ -33,18 +41,23 @@ export function renderRecipes(recipes) {
 
         const deleteButton = document.createElement("button");
         deleteButton.textContent = "Supprimer";
-        deleteButton.className = "bg-red-500 text-white px-4 py-2 rounded-lg mt-3";
+        deleteButton.className =
+            "bg-red-500 text-white px-4 py-2 rounded-lg mt-3";
         deleteButton.dataset.id = recipe.id;
 
         content.append(title, cuisine, difficulty, time, deleteButton);
         card.append(image, content);
+
         container.appendChild(card);
     });
 }
 
 export function renderNoResults() {
     const container = document.querySelector("#recipes");
+    const count = document.querySelector("#recipe-count");
+
     container.replaceChildren();
+    count.textContent = "0 recette affichée";
 
     const message = document.createElement("p");
     message.textContent = "Aucune recette trouvée";
@@ -52,7 +65,8 @@ export function renderNoResults() {
     const button = document.createElement("button");
     button.textContent = "Afficher toutes les recettes";
     button.id = "show-all";
-    button.className = "bg-red-500 text-white px-4 py-2 rounded-lg mt-4";
+    button.className =
+        "bg-red-500 text-white px-4 py-2 rounded-lg mt-4";
 
     container.append(message, button);
 }
